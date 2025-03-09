@@ -1,0 +1,26 @@
+name: Create Release Zip
+
+on:
+  push:
+    tags:
+      - 'v*'  # Runs when a new tag (e.g., v1.0.0) is pushed
+
+permissions:
+  contents: write  # Grant write access to create a release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Create ZIP Archive
+        run: zip -r telegram-mini-app-${{ github.ref_name }}.zip . -x ".git/*"
+
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: telegram-mini-app-${{ github.ref_name }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
